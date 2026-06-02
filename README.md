@@ -151,7 +151,7 @@ OPENAI_MODEL=claude-sonnet-4-6
 
 ## Constraints
 
-- **Time**: 600 seconds per chunk (compress + decompress)
+- **Time**: 600 seconds per chunk (compress + decompress). Calibrated for Apple Silicon / modern x86. Adjust `EVAL_TIMEOUT` env var for slower machines.
 - **Memory**: 4 GB
 - **Allowed imports**: `torch`, `numpy`, standard library utilities
 - **Banned**: compression libraries (`zlib`, `lzma`), system access (`subprocess`, `os`), pre-trained model loading (`torch.hub`, `pickle`)
