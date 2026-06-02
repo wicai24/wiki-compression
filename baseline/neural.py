@@ -1,6 +1,14 @@
 """
 Neural byte predictor for text compression.
 
+CONSTRAINT: This task requires a genuine neural network. The model MUST:
+- Inherit nn.Module
+- Use learnable layers (nn.Linear, nn.GRUCell, nn.LSTMCell, nn.MultiheadAttention, etc.)
+- Train via backpropagation (.backward())
+Do NOT replace the neural network with classical counting — iterate on the
+ARCHITECTURE. You may combine neural predictions with simple statistics,
+but the core prediction must come from a trained neural network.
+
 Scores ~1.5 on 200KB Wikipedia chunks. The PPM baseline scores ~2.3.
 
 Look at the per-segment evaluator feedback: the first 10KB typically costs

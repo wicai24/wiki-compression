@@ -520,14 +520,33 @@ def run_evaluation(mode, solution_dir, seed=None, num_chunks=3, chunk_size=100_0
         if os.path.exists(model_path):
             with open(model_path, 'r') as f:
                 source = f.read()
-            if 'import torch' not in source and 'from torch' not in source:
+
+            # Must use torch AND have a genuine nn.Module with learnable parameters
+            has_torch = 'import torch' in source or 'from torch' in source
+            has_nn_module = 'nn.Module' in source
+            has_parameters = 'nn.Linear' in source or 'nn.Embedding' in source or \
+                             'nn.GRUCell' in source or 'nn.LSTMCell' in source or \
+                             'nn.RNNCell' in source or 'nn.GRU(' in source or \
+                             'nn.LSTM(' in source or 'nn.Conv' in source or \
+                             'nn.TransformerEncoder' in source or \
+                             'nn.MultiheadAttention' in source
+            has_backward = '.backward()' in source or 'loss.backward' in source
+
+            if not (has_torch and has_nn_module and has_parameters and has_backward):
+                missing = []
+                if not has_torch: missing.append('import torch')
+                if not has_nn_module: missing.append('nn.Module subclass')
+                if not has_parameters: missing.append('learnable layers (nn.Linear, nn.GRUCell, etc.)')
+                if not has_backward: missing.append('gradient-based training (.backward())')
                 return {
                     'feasible': False,
                     'score': 0.0,
                     'per_chunk': [],
                     'code_size_bytes': get_code_size(solution_dir),
-                    'errors': ['Neural enforcement: model.py must import torch. '
-                               'Classical-only approaches are not allowed in this mode.'],
+                    'errors': [f'Neural enforcement: model.py must use a genuine neural network. '
+                               f'Missing: {", ".join(missing)}. '
+                               f'The model must inherit nn.Module, use learnable layers, '
+                               f'and train via backpropagation.'],
                     'wall_time_sec': time.time() - t_start,
                 }
 
