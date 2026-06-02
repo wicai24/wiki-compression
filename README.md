@@ -70,7 +70,7 @@ The evaluator provides per-segment (10KB) bits-per-byte data, showing where the 
 
 ## Baselines
 
-Three starting points are provided in `baselines/`:
+Three starting points are provided in `baseline/`:
 
 | Baseline | Score (200KB) | Description |
 |----------|---------------|-------------|
@@ -80,7 +80,7 @@ Three starting points are provided in `baselines/`:
 
 To switch baseline:
 ```bash
-cp baselines/neural.py solution_template/model.py
+cp baseline/neural.py solution_template/model.py
 ```
 
 The default (`ppm.py`) is recommended — it forces the agent to go beyond simple n-gram counting.
@@ -89,7 +89,7 @@ The default (`ppm.py`) is recommended — it forces the agent to go beyond simpl
 
 ```
 ├── README.md                  # This file
-├── Task.md                    # Agent-facing problem statement
+├── task.md                    # Agent-facing problem statement
 ├── metadata.json              # Task metadata
 ├── packaging_manifest.json    # File permissions manifest
 ├── requirements.txt           # Python dependencies
@@ -99,7 +99,7 @@ The default (`ppm.py`) is recommended — it forces the agent to go beyond simpl
 ├── lib/                       # Read-only infrastructure
 │   ├── arithmetic_coding.py   # Integer arithmetic encoder/decoder
 │   └── utils.py               # Scoring and frequency helpers
-├── baselines/                 # Starting points (read-only)
+├── baseline/                 # Starting points (read-only)
 │   ├── noop.py                # Uniform distribution
 │   ├── ppm.py                 # Classical PPM (default)
 │   └── neural.py              # GRU byte predictor
@@ -151,8 +151,7 @@ OPENAI_MODEL=claude-sonnet-4-6
 
 ## Constraints
 
-- **Time**: 600 seconds per chunk (compress + decompress). Calibrated for Apple Silicon / modern x86. Adjust `EVAL_TIMEOUT` env var for slower machines.
-- **Memory**: 4 GB
+- **Time**: 600 seconds per chunk (compress + decompress). Calibrated for Apple Silicon / modern x86. Adjust via `EVAL_TIMEOUT` env var.
 - **Allowed imports**: `torch`, `numpy`, standard library utilities
 - **Banned**: compression libraries (`zlib`, `lzma`), system access (`subprocess`, `os`), pre-trained model loading (`torch.hub`, `pickle`)
 - **Determinism**: Compress and decompress create separate `Model()` instances that must produce identical prediction sequences

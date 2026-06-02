@@ -1,22 +1,27 @@
 {
   "task_id": "neural-text-compression",
-  "task_name": "Neural Text Compression Optimization",
+  "task_name": "Text Compression Optimization",
   "category": "ai_ml_infra",
   "difficulty": "hard",
-  "description": "Optimize a neural text compressor (RNN/LSTM/Transformer) to minimize compressed size of Wikipedia text chunks. The agent iteratively improves the prediction model; a read-only arithmetic coder converts predictions into bits.",
+  "description": "Optimize a text compressor to minimize compressed size of Wikipedia text chunks. The agent iteratively improves the prediction model; a read-only arithmetic coder converts predictions into bits.",
   "scoring": {
     "metric": "compression_ratio",
-    "formula": "original_size / (archive_size + decompressor_size)",
+    "formula": "original_size / (compressed_size + decompressor_code_size)",
     "higher_is_better": true,
-    "decompressor_size_includes": ["solution_template/*.py", "serialized model weights if any"]
+    "compressed_size": "output of compress.py (bitstream + any serialized model weights)",
+    "decompressor_code_size": "total bytes of solution_template/*.py"
   },
   "feasibility": {
     "check": "byte-exact decompression",
     "timeout_per_chunk_sec": 600,
-    "memory_limit_mb": 4096
+    "timeout_adjustable": "EVAL_TIMEOUT env var"
   },
-  "estimated_baseline_score": 1.5,
-  "estimated_ceiling_score": 6.0,
+  "baselines": {
+    "noop": {"score": 0.98, "description": "uniform distribution"},
+    "ppm": {"score": 2.3, "description": "order-8 adaptive PPM (default)"},
+    "neural": {"score": 1.5, "description": "GRU with online SGD"}
+  },
+  "estimated_ceiling_score": 9.4,
   "budget_recommended": 100,
   "requires_gpu": false,
   "requires_network": false,

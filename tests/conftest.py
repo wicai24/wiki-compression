@@ -10,7 +10,7 @@ sys.path.insert(0, PROJECT_ROOT)
 sys.path.insert(0, os.path.join(PROJECT_ROOT, 'lib'))
 
 SAMPLE_DIR = os.path.join(PROJECT_ROOT, 'instances', 'sample')
-BASELINE_DIR = os.path.join(PROJECT_ROOT, 'baselines')
+BASELINE_DIR = os.path.join(PROJECT_ROOT, 'baseline')
 SOLUTION_DIR = os.path.join(PROJECT_ROOT, 'solution_template')
 
 

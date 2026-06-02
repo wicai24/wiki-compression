@@ -1,5 +1,5 @@
 You may only modify solution_template/model.py (the neural prediction model).
-Do not modify compress.py, decompress.py, or any files in lib/, instances/, or baselines/.
+Do not modify compress.py, decompress.py, or any files in lib/, instances/, or baseline/.
 
 The Model class must expose:
   - predict() -> numpy array of shape (256,) summing to ~1.0

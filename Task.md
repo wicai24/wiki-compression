@@ -10,7 +10,12 @@ Your goal: **maximize the compression ratio** while maintaining lossless correct
 score = original_size / (compressed_size + decompressor_size)
 ```
 
-Higher score is better. The decompressor size includes all `.py` files in your solution directory plus any serialized model weights.
+Higher score is better.
+
+- `compressed_size` = the output of compress.py (bitstream + any serialized model weights)
+- `decompressor_size` = total bytes of all `.py` files in your solution directory
+
+For online learning (model adapts from scratch), the compressed output is just the bitstream. For multi-pass strategies (train model first, then compress), trained weights must be serialized into the compressed output — they count as compressed_size.
 
 ## The Pipeline
 
@@ -46,11 +51,23 @@ Files in `solution_template/`:
 ## Constraints
 
 - **Correctness**: Decompressed output must be byte-identical to the original.
-- **Time limit**: 600 seconds per chunk for compression; 600 seconds for decompression.
-- **Memory**: 4 GB.
+- **Time limit**: 600 seconds per chunk for compression; 600 seconds for decompression. Adjustable via `EVAL_TIMEOUT` env var for different hardware.
 - **Allowed imports**: `torch`, `numpy`, standard library utilities. See README.md for the full list.
 - **Banned imports**: Compression libraries, system access, networking, pre-trained model loaders. The evaluator performs AST-based import scanning.
 - **No web search**: You do not have internet access during this task.
+
+## Batch Evaluation
+
+You can run the evaluator multiple times per iteration to test variants in parallel:
+
+```bash
+# Test multiple variants and compare
+bash run_evaluator.sh --mode sample    # fast sanity check (~2s)
+bash run_evaluator.sh --mode dev       # full evaluation (~30-300s depending on model)
+bash run_evaluator.sh --seed 99        # test on random chunks (anti-overfitting)
+```
+
+Each invocation is independent. Use sample mode for fast iteration, dev mode for real scoring.
 
 ## Running the Evaluator
 

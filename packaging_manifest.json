@@ -4,7 +4,7 @@
   "files": {
     "read_only": [
       "README.md",
-      "Task.md",
+      "task.md",
       "metadata.json",
       "packaging_manifest.json",
       "evaluator.py",
@@ -13,9 +13,9 @@
       "lib/__init__.py",
       "lib/arithmetic_coding.py",
       "lib/utils.py",
-      "baselines/noop.py",
-      "baselines/ppm.py",
-      "baselines/neural.py",
+      "baseline/noop.py",
+      "baseline/ppm.py",
+      "baseline/neural.py",
       "instances/sample/*",
       "instances/dev/*",
       "instances/train/*",
@@ -32,10 +32,10 @@
     ]
   },
   "baselines": {
-    "noop": "baselines/noop.py",
-    "ppm": "baselines/ppm.py",
-    "neural": "baselines/neural.py",
-    "default": "baselines/ppm.py"
+    "noop": "baseline/noop.py",
+    "ppm": "baseline/ppm.py",
+    "neural": "baseline/neural.py",
+    "default": "baseline/ppm.py"
   },
   "entry_points": {
     "evaluator": "bash run_evaluator.sh",
