@@ -424,10 +424,16 @@ def evaluate_chunk(chunk_name, original_data, solution_dir):
 
             model_c.observe(byte_val)
 
-            # Timeout check every 10K bytes
-            if i % 10000 == 0 and (time.time() - t0) > TIMEOUT_PER_CHUNK:
-                result['error'] = f"Compression timed out after {TIMEOUT_PER_CHUNK}s at byte {i}/{len(original_data)}"
-                return result
+            # Timeout + memory check every 10K bytes
+            if i % 10000 == 0:
+                if (time.time() - t0) > TIMEOUT_PER_CHUNK:
+                    result['error'] = f"Compression timed out after {TIMEOUT_PER_CHUNK}s at byte {i}/{len(original_data)}"
+                    return result
+                import resource
+                mem_mb = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / (1024 * 1024)
+                if mem_mb > MEMORY_LIMIT_MB:
+                    result['error'] = f"Memory limit exceeded: {mem_mb:.0f}MB > {MEMORY_LIMIT_MB}MB at byte {i}"
+                    return result
 
         # Final partial segment
         if current_segment_count > 0:
@@ -460,9 +466,15 @@ def evaluate_chunk(chunk_name, original_data, solution_dir):
             restored.append(byte_val)
             model_d.observe(byte_val)
 
-            if i % 10000 == 0 and (time.time() - t0) > TIMEOUT_PER_CHUNK:
-                result['error'] = f"Decompression timed out after {TIMEOUT_PER_CHUNK}s at byte {i}/{original_length}"
-                return result
+            if i % 10000 == 0:
+                if (time.time() - t0) > TIMEOUT_PER_CHUNK:
+                    result['error'] = f"Decompression timed out after {TIMEOUT_PER_CHUNK}s at byte {i}/{original_length}"
+                    return result
+                import resource
+                mem_mb = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / (1024 * 1024)
+                if mem_mb > MEMORY_LIMIT_MB:
+                    result['error'] = f"Memory limit exceeded: {mem_mb:.0f}MB > {MEMORY_LIMIT_MB}MB at byte {i}"
+                    return result
 
         result['decompress_time'] = time.time() - t0
 

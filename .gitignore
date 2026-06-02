@@ -16,3 +16,7 @@ build/
 .pytest_cache/
 runs/
 *.log
+solution_opus/
+solution_sonnet/
+solution_opus_ppm/
+solution_sonnet_ppm/
