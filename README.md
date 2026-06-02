@@ -2,8 +2,6 @@
 
 A [Frontier-Eng](https://github.com/EinsiaLab/Frontier-Engineering) style optimization task where an agent iteratively improves a text compressor to achieve better compression of Wikipedia data.
 
-Based on the [Hutter Prize](http://prize.hutter1.net/) — compressing text is equivalent to building a good prediction model. An arithmetic coder converts predictions into compressed bits. Better predictions = fewer bits = higher score.
-
 ## Quick Start
 
 ```bash
