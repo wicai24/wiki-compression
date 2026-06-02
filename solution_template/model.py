@@ -1,15 +1,12 @@
 """
-PPM baseline: Adaptive Prediction by Partial Matching (order-0 through order-8).
+Baseline: Adaptive PPM (Prediction by Partial Matching) compressor.
 
-Uses byte-level context statistics with confidence-weighted mixing and
-Dirichlet smoothing. Higher-order contexts get more weight when they have
-sufficient observations.
+Uses order-0 through order-8 byte-level context models with confidence-weighted
+mixing. Each context order maintains frequency counts with Dirichlet smoothing.
+Higher-order contexts get more weight when they have sufficient statistics.
 
-Score: ~2.3 on 200KB Wikipedia chunks (~3.5 bits per byte).
-
-This is a strong classical baseline. To improve beyond it, the agent must
-find approaches that capture patterns PPM cannot: long-range dependencies,
-structural relationships, learned representations, or better model mixing.
+This scores ~2.3 on 200KB Wikipedia chunks. To improve further, consider:
+what patterns does this model miss? Where does it waste bits?
 """
 
 import numpy as np
@@ -19,10 +16,10 @@ from collections import defaultdict
 class BytePredictor:
     def __init__(self, vocab_size=256, **kwargs):
         self.v = vocab_size
-        self.max_order = 8
+        self.max_order = 12
 
-        # Smoothing factors per order
-        self.smoothing = [1.0, 0.5, 0.25, 0.1, 0.05, 0.02, 0.01, 0.005, 0.002]
+        # Smoothing factors per order (lower = sharper after more observations)
+        self.smoothing = [1.0, 0.5, 0.25, 0.1, 0.05, 0.02, 0.01, 0.005, 0.002, 0.001, 0.0005, 0.0002, 0.0001]
 
         # Count tables: counts[order][context_tuple] -> array of 256 floats
         self.counts = [
@@ -30,50 +27,64 @@ class BytePredictor:
             for s in self.smoothing
         ]
 
-        # Base mixing weights per order
+        # Base mixing weights per order (log-space mixing)
+        # Tuned: shift weight toward medium-high orders (5-9) for Wikipedia XML
         self.base_weights = np.array([
-            0.02, 0.04, 0.08, 0.14, 0.19, 0.20, 0.16, 0.10, 0.07
+            0.01, 0.02, 0.04, 0.08, 0.12, 0.16, 0.18, 0.16, 0.12, 0.07, 0.03, 0.01, 0.01
         ])
 
+        # Recent byte history (kept to max_order + some margin)
         self.history = []
 
     def predict(self):
         v = self.v
-        prediction = np.zeros(v, dtype=np.float64)
+        h = self.history
+        hn = len(h)
+
+        # Mix in log-probability space (geometric mixing)
+        log_pred = np.zeros(v, dtype=np.float64)
         total_weight = 0.0
 
         for order in range(self.max_order + 1):
             if order == 0:
                 ctx = ()
-            elif len(self.history) < order:
+            elif hn < order:
                 continue
             else:
-                ctx = tuple(self.history[-order:])
+                ctx = tuple(h[-order:])
 
             c = self.counts[order][ctx]
             total_count = c.sum()
-            prob = c / total_count
 
             effective_count = total_count - self.smoothing[order] * v
+            eff = max(effective_count, 0.0)
             if order > 0:
-                confidence = max(effective_count, 0) / (max(effective_count, 0) + 1.2) + 0.04
+                # Tighter confidence threshold for high orders
+                thresh = 2.0 if order >= 6 else 3.0
+                confidence = eff / (eff + thresh)
                 weight = self.base_weights[order] * confidence
             else:
                 weight = self.base_weights[0]
 
-            prediction += weight * prob
+            if weight < 1e-10:
+                continue
+
+            prob = np.maximum(c / total_count, 1e-8)
+            log_pred += weight * np.log(prob)
             total_weight += weight
 
         if total_weight > 0:
-            prediction /= total_weight
+            log_pred /= total_weight
         else:
-            prediction = np.ones(v, dtype=np.float64) / v
+            log_pred = np.zeros(v, dtype=np.float64)
 
-        prediction = np.maximum(prediction, 1e-7)
+        log_pred -= log_pred.max()
+        prediction = np.exp(log_pred)
         prediction /= prediction.sum()
         return prediction
 
     def observe(self, byte_val):
+        # Update counts at every order
         for order in range(self.max_order + 1):
             if order == 0:
                 ctx = ()
@@ -83,9 +94,11 @@ class BytePredictor:
                 ctx = tuple(self.history[-order:])
             self.counts[order][ctx][byte_val] += 1.0
 
-        self.history.append(byte_val)
-        if len(self.history) > 12:
-            self.history = self.history[-12:]
+        h = self.history
+        h.append(byte_val)
+        if len(h) > self.max_order + 2:
+            del h[0]
+
         return 0.0
 
 

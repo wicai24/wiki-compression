@@ -88,6 +88,9 @@ BANNED_MODULES = {
 BANNED_CALLS = {
     '__import__', 'exec', 'eval', 'compile',
     'os.system', 'os.popen', 'os.exec',
+    'open',       # prevent reading test data, evaluator source, or writing files
+    'io.open',    # alternative file open
+    'builtins.open',
 }
 
 
