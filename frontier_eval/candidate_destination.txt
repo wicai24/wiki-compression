@@ -1,0 +1,2 @@
+# Where the evolved candidate code is written, relative to benchmark root
+solution_template/model.py

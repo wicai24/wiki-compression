@@ -1,0 +1,19 @@
+You may only modify solution_template/model.py (the neural prediction model).
+Do not modify compress.py, decompress.py, or any files in lib/, instances/, or baselines/.
+
+The Model class must expose:
+  - predict() -> numpy array of shape (256,) summing to ~1.0
+  - observe(byte_val: int) -> float (loss value)
+
+compress.py and decompress.py import "from model import Model" and call predict/observe in lockstep.
+Both compressor and decompressor create a fresh Model() instance — they MUST produce identical prediction sequences.
+Use torch.manual_seed() and deterministic settings to ensure this.
+
+Allowed imports: torch, numpy, math, struct, sys, io, collections, functools, itertools, typing, dataclasses, time, warnings.
+Banned imports: zlib, gzip, bz2, lzma, subprocess, os, pickle, transformers, torch.hub, importlib, exec, eval.
+
+Time limit: 600 seconds per chunk for compression, 600 seconds for decompression.
+Memory limit: 4 GB. CPU only (CUDA_VISIBLE_DEVICES is empty).
+
+Scoring: score = original_size / (compressed_size + code_size). Higher is better.
+The decompressed output must be byte-identical to the original input.

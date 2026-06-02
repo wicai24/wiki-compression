@@ -1,0 +1,34 @@
+<mediawiki xmlns="http://www.mediawiki.org/xml/export-0.10/" xml:lang="en">
+<page>
+<title>Anarchism</title>
+<text>
+Anarchism is a political philosophy and movement that is sceptical of authority and rejects all involuntary, coercive forms of hierarchy. Anarchism calls for the abolition of the state, which it holds to be unnecessary, undesirable, and harmful. As a historically left-wing movement, placed on the farthest left of the political spectrum, it is usually described alongside communism and socialism.
+
+Humans lived in societies without formal hierarchies long before the establishment of formal states, realms, or empires. With the rise of organised hierarchical bodies, scepticism toward authority also rose. Although traces of anarchist thought are found throughout history, modern anarchism emerged from the Enlightenment. During the latter half of the 19th and the first decades of the 20th century, the anarchist movement flourished in most parts of the world and had a significant role in workers' struggles for emancipation.
+
+Various anarchist schools of thought formed during this period. Anarchists have employed diverse approaches, which may be generally divided into revolutionary and evolutionary strategies. There is significant overlap between the two, which are merely descriptive. Revolutionary strategies aimed to bring about anarchism through subversion.
+
+The central tendency of anarchism as a social movement has been represented by anarcho-communism and anarcho-syndicalism, with individualist anarchism being primarily a literary phenomenon. Many anarchists oppose all forms of aggression, supporting self-defence or non-violence, while others have supported the use of militant measures, including revolution and propaganda of the deed.
+
+Etymologically, anarchism is derived from the Greek anarkhia, meaning "without a ruler". The suffix -ism denotes the ideological current that favours anarchy. The first known use of the word "anarchy" appears in the play Seven Against Thebes by Aeschylus, dated at 467 BC. The word anarchism first entered English in 1642, with the meaning "a state of being without government".
+
+Pierre-Joseph Proudhon adopted anarchy and anarchist in his 1840 treatise What Is Property? to refer to anarchism. From 1881, the French term libertaire has been used as a synonym for anarchism and was used almost exclusively in this sense until the 1950s in the United States.
+</text>
+</page>
+<page>
+<title>Mathematics</title>
+<text>
+Mathematics is an area of knowledge that includes the topics of numbers, formulas and related structures, shapes and the spaces in which they are contained, and quantities and their changes. These topics are represented in modern mathematics with the major subdisciplines of number theory, algebra, geometry, and analysis, respectively.
+
+Most mathematical activity involves the use of pure reason to discover or prove the properties of abstract objects, which consist of either abstractions from nature or entities that are stipulated with certain properties, called axioms. A mathematical proof consists of a succession of applications of deductive rules to already established results.
+
+Mathematics is used in science for modelling phenomena, which then allows predictions to be made from experimental laws. The independence of mathematical truth from any experimentation implies that the accuracy of such predictions depends only on the adequacy of the model. Inaccurate predictions rather than mathematics itself, are to be corrected.
+
+Ancient mathematical texts from Mesopotamia and Egypt are from 2000 to 1800 BC. Many early texts mention Pythagorean triples and so by inference the Pythagorean theorem seems to be the most ancient and widespread mathematical concept after basic arithmetic and geometry. It is in Babylonian mathematics that elementary arithmetic first appears in the archaeological record.
+
+The Babylonians also possessed a place-value system and used a sexagesimal numeral system which is still in use today for measuring angles and time. In the 6th century BC, Greek mathematics began with the Pythagoreans, who coined the term "mathematics" from the ancient Greek mathema, meaning "subject of instruction".
+
+Greek mathematics greatly refined the methods and expanded the subject matter of mathematics. Although they made virtually no contributions to theoretical mathematics, the ancient Romans used applied mathematics in surveying, structural engineering, mechanical engineering, bookkeeping, creation of lunar and solar calendars, and even arts and crafts.
+</text>
+</page>
+</mediawiki>

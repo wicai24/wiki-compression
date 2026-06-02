@@ -1,0 +1,8 @@
+# Files the agent (LLM) can see as context
+Task.md
+README.md
+solution_template/model.py
+solution_template/compress.py
+solution_template/decompress.py
+lib/arithmetic_coding.py
+lib/utils.py

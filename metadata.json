@@ -1,0 +1,25 @@
+{
+  "task_id": "neural-text-compression",
+  "task_name": "Neural Text Compression Optimization",
+  "category": "ai_ml_infra",
+  "difficulty": "hard",
+  "description": "Optimize a neural text compressor (RNN/LSTM/Transformer) to minimize compressed size of Wikipedia text chunks. The agent iteratively improves the prediction model; a read-only arithmetic coder converts predictions into bits.",
+  "scoring": {
+    "metric": "compression_ratio",
+    "formula": "original_size / (archive_size + decompressor_size)",
+    "higher_is_better": true,
+    "decompressor_size_includes": ["solution_template/*.py", "serialized model weights if any"]
+  },
+  "feasibility": {
+    "check": "byte-exact decompression",
+    "timeout_per_chunk_sec": 600,
+    "memory_limit_mb": 4096
+  },
+  "estimated_baseline_score": 1.5,
+  "estimated_ceiling_score": 6.0,
+  "budget_recommended": 100,
+  "requires_gpu": false,
+  "requires_network": false,
+  "python_version": ">=3.10",
+  "dependencies": ["numpy", "torch"]
+}

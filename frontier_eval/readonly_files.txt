@@ -1,0 +1,13 @@
+# Files that must not be modified by the candidate
+frontier_eval
+lib/arithmetic_coding.py
+lib/utils.py
+lib/__init__.py
+evaluator.py
+run_evaluator.sh
+setup_data.py
+solution_template/compress.py
+solution_template/decompress.py
+instances
+baseline
+tests

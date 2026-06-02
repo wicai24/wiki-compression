@@ -1,0 +1,2 @@
+# Path to the initial (baseline) candidate program, relative to benchmark root
+solution_template/model.py

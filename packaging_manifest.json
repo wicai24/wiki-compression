@@ -1,0 +1,47 @@
+{
+  "task_id": "neural-text-compression",
+  "version": "0.3.0",
+  "files": {
+    "read_only": [
+      "README.md",
+      "Task.md",
+      "metadata.json",
+      "packaging_manifest.json",
+      "evaluator.py",
+      "run_evaluator.sh",
+      "setup_data.py",
+      "lib/__init__.py",
+      "lib/arithmetic_coding.py",
+      "lib/utils.py",
+      "baselines/noop.py",
+      "baselines/ppm.py",
+      "baselines/neural.py",
+      "instances/sample/*",
+      "instances/dev/*",
+      "instances/train/*",
+      "instances/hidden/*",
+      "tests/*",
+      "validation_report.md",
+      "frontier_eval/*"
+    ],
+    "agent_editable": [
+      "solution_template/model.py",
+      "solution_template/compress.py",
+      "solution_template/decompress.py",
+      "solution_template/*.py"
+    ]
+  },
+  "baselines": {
+    "noop": "baselines/noop.py",
+    "ppm": "baselines/ppm.py",
+    "neural": "baselines/neural.py",
+    "default": "baselines/ppm.py"
+  },
+  "entry_points": {
+    "evaluator": "bash run_evaluator.sh",
+    "evaluator_dev": "bash run_evaluator.sh --mode dev",
+    "evaluator_sample": "bash run_evaluator.sh --mode sample",
+    "frontier_eng": "python -m frontier_eval task=unified task.benchmark=AIInfra/NeuralTextCompression",
+    "setup": "python setup_data.py"
+  }
+}
