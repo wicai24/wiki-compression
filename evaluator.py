@@ -495,7 +495,7 @@ def evaluate_chunk(chunk_name, original_data, solution_dir):
             del sys.modules['_eval_model']
 
 
-def run_evaluation(mode, solution_dir, seed=None, num_chunks=3, chunk_size=100_000):
+def run_evaluation(mode, solution_dir, seed=None, num_chunks=3, chunk_size=100_000, require_neural=False):
     """Run full evaluation and return results dict."""
     t_start = time.time()
     errors = []
@@ -513,6 +513,23 @@ def run_evaluation(mode, solution_dir, seed=None, num_chunks=3, chunk_size=100_0
             'errors': error_msgs,
             'wall_time_sec': time.time() - t_start,
         }
+
+    # Step 1b: Neural enforcement (optional)
+    if require_neural:
+        model_path = os.path.join(solution_dir, 'model.py')
+        if os.path.exists(model_path):
+            with open(model_path, 'r') as f:
+                source = f.read()
+            if 'import torch' not in source and 'from torch' not in source:
+                return {
+                    'feasible': False,
+                    'score': 0.0,
+                    'per_chunk': [],
+                    'code_size_bytes': get_code_size(solution_dir),
+                    'errors': ['Neural enforcement: model.py must import torch. '
+                               'Classical-only approaches are not allowed in this mode.'],
+                    'wall_time_sec': time.time() - t_start,
+                }
 
     # Step 2: Get chunks and code size
     chunks = get_chunks_for_mode(mode, seed=seed,
@@ -594,6 +611,8 @@ def main():
                              f'Set to 0 for unlimited.')
     parser.add_argument('--solution-dir', default=None,
                         help='Path to solution directory (default: solution_template/)')
+    parser.add_argument('--require-neural', action='store_true',
+                        help='Require model.py to import torch (enforce neural approach)')
     args = parser.parse_args()
 
     solution_dir = args.solution_dir or os.path.join(SCRIPT_DIR, 'solution_template')
@@ -612,7 +631,8 @@ def main():
     results = run_evaluation(args.mode, solution_dir,
                              seed=args.seed,
                              num_chunks=args.num_chunks,
-                             chunk_size=args.chunk_size)
+                             chunk_size=args.chunk_size,
+                             require_neural=args.require_neural)
 
     # Output JSON to stdout (this is what the agent/harness parses)
     print(json.dumps(results, indent=2))

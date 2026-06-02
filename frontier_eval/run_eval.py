@@ -29,6 +29,8 @@ def main():
                         help='Path to write metrics JSON')
     parser.add_argument('--mode', default='sample',
                         help='Evaluation mode: sample|dev|train|hidden')
+    parser.add_argument('--require-neural', action='store_true',
+                        help='Enforce neural approach (must import torch)')
     args = parser.parse_args()
 
     benchmark_dir = os.path.abspath(args.benchmark)
@@ -87,7 +89,7 @@ def main():
             '--mode', args.mode,
             '--solution-dir', sandbox,
             '--budget', '0',
-        ]
+        ] + (['--require-neural'] if args.require_neural else [])
 
         result = subprocess.run(cmd, capture_output=True, timeout=1800,
                                 env=env, cwd=benchmark_dir)

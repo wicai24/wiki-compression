@@ -1,29 +1,27 @@
 """
-Neural baseline: GRU byte predictor with online learning.
+Neural byte predictor for text compression.
 
-Single-layer GRU with byte embedding, online SGD training. Adapts to the
-data byte-by-byte during compression.
+Scores ~1.5 on 200KB Wikipedia chunks. The PPM baseline scores ~2.3.
 
-Score: ~1.5 on 200KB Wikipedia chunks (~5.3 bits per byte).
+Look at the per-segment evaluator feedback: the first 10KB typically costs
+~5.5 bpb (model knows nothing), while the last 10KB costs ~3.5 bpb (model
+has learned). Most bits are wasted during warmup — a model that adapts
+faster in the first few thousand bytes would significantly improve the score.
 
-This is a starting point for neural architecture exploration. Key bottlenecks:
+Also note: the hidden state is the model's only memory of past bytes. Once
+a pattern scrolls past the effective memory horizon, it's forgotten. The
+data contains patterns at multiple scales — individual byte frequencies,
+common byte pairs, XML tag structures, repeated phrases across paragraphs.
+A model that can represent and recall patterns at different scales would
+predict much better than one that compresses everything into a fixed-size
+hidden vector.
 
-1. SLOW ADAPTATION - SGD takes thousands of bytes to learn. The first ~10KB
-   is wasted on warmup. Ideas: faster optimizer, learned init, count warmup.
-
-2. LIMITED CONTEXT - GRU hidden state is the only memory. Cannot directly
-   attend to patterns 100+ bytes ago. Ideas: attention over recent history,
-   explicit memory buffer, sliding window transformer.
-
-3. SINGLE MODEL - One GRU handles markup, text, numbers, whitespace alike.
-   Ideas: mixture of experts, context-dependent routing, separate sub-models.
-
-4. NO STRUCTURAL AWARENESS - Treats bytes as flat sequence. Cannot exploit
-   XML tags, wiki markup syntax, repeated templates. Ideas: learned groupings,
-   positional features, bracket tracking.
-
-5. CALIBRATION - Raw softmax may be overconfident on wrong predictions,
-   wasting bits. Ideas: temperature scaling, label smoothing, entropy penalty.
+Finally: the model currently trains on each byte exactly once (online
+learning). But the data is available in full — you could train the model
+on the data first, serialize the trained weights into the compressed output
+header, and then compress using the trained model. The decompressor would
+load the weights and decode. The tradeoff: trained weights cost bytes in
+the archive, but better predictions save more bytes than the weights cost.
 """
 
 import torch
